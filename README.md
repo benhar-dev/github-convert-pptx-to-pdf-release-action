@@ -28,7 +28,7 @@ This action was created to convert pptx files to pdf, then to zip and release th
 
 You will see a new release is made with a zip file containing the pptx files as pdf.
 
-#### a. The code snippet which does the work
+## Code Snippet
 
 ```yml
 name: Convert PPTX to PDF and Create Release with PDF Zip
