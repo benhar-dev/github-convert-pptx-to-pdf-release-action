@@ -1,0 +1,64 @@
+name: Convert PPTX to PDF and Create Release with PDF Zip
+
+on:
+  push:
+    paths:
+      - "**/*.pptx"
+
+  workflow_dispatch:
+
+jobs:
+  convert-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install LibreOffice
+        run: sudo apt-get install -y libreoffice
+
+      - name: Clear old PDFs in handouts folder
+        run: |
+          mkdir -p handouts
+          rm -f handouts/*.pdf
+
+      - name: Convert PPTX to PDF and move to handouts folder
+        run: |
+          find . -name "*.pptx" | while IFS= read -r file; do
+            echo "Found file: $file"
+            abs_path=$(realpath "$file")
+            echo "Absolute path: $abs_path"
+            echo "Converting file to PDF..."
+            soffice --headless --convert-to pdf "$abs_path" --outdir handouts
+            if [ $? -eq 0 ]; then
+              echo "Conversion successful for $abs_path"
+            else
+              echo "Error in conversion for $abs_path"
+            fi
+          done
+
+      - name: Create zip of PDFs
+        run: |
+          zip -r handouts.zip handouts/
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: "pdf-release-${{ github.sha }}"
+          release_name: "PDF Release ${{ github.sha }}"
+          draft: false
+          prerelease: false
+
+      - name: Upload PDF zip to Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./handouts.zip
+          asset_name: handouts.zip
+          asset_content_type: application/zip
