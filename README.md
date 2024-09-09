@@ -30,6 +30,15 @@ A demo of this in action can be found [here](https://github.com/benhar-dev/githu
 
 You will see a new release is made with a zip file containing the pptx files as pdf.
 
+## Error: Resource not accessible by integration
+
+Depending on your GitHub Settings you may need to enable action privileges.
+
+1. Go to Settings > Actions > General
+2. Scroll down to Workflow permissions
+3. Select "Read and write permissions"
+4. Click Save
+
 ## Code Snippet
 
 ```yml
