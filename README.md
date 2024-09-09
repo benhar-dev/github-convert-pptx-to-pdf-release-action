@@ -19,6 +19,8 @@ in perpetuity.
 
 This action was created to convert pptx files to pdf, then to zip and release them as an asset.
 
+A demo of this in action can be found [here](https://github.com/benhar-dev/github-convert-pptx-to-pdf-release-action-demo).
+
 ## Getting Started
 
 1. Add the convert-pptx-to-pdf to the .github\workflows folder in your repo.
